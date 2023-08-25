@@ -1,7 +1,7 @@
 {
     "name": "monogo/magento-typesense-analytics",
     "description": "Typesense Analytics",
-    "homepage": "https://bitbucket.org/monogo/magento-typesense-analytics",
+    "homepage": "https://github.com/MonogoPolska/magento-typesense-analytics",
     "license": "proprietary",
     "type": "magento2-module",
     "require": {

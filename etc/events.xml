@@ -1,0 +1,10 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="typesense_core_after_add_alias">
+        <observer name="typesense_analytics_after_add_alias"
+                  instance="Monogo\TypesenseAnalytics\Observer\HandleNewAlias"/>
+    </event>
+    <event name="typesense_after_flush">
+        <observer name="typesense_analytics_after_flush" instance="Monogo\TypesenseAnalytics\Observer\HandleFlush"/>
+    </event>
+</config>

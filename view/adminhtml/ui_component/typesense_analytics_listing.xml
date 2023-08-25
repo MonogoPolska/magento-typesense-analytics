@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">typesense_analytics_listing.typesense_analytics_listing_data_source</item>
+            <item name="deps" xsi:type="string">typesense_analytics_listing.typesense_analytics_listing_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">typesense_analytics_columns</item>
+        <item name="buttons" xsi:type="array">
+            <item name="delete" xsi:type="array">
+                <item name="name" xsi:type="string">delete</item>
+                <item name="label" xsi:type="string">Clean Analytics data</item>
+                <item name="class" xsi:type="string">primary</item>
+                <item name="url" xsi:type="string">*/*/delete</item>
+            </item>
+        </item>
+    </argument>
+    <dataSource name="typesense_analytics_listing_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Monogo\TypesenseAnalytics\Ui\DataProvider\Analytics\ListingDataProvider</argument>
+            <argument name="name" xsi:type="string">typesense_analytics_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">index_id</argument>
+            <argument name="requestFieldName" xsi:type="string">index_id</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="update_url" xsi:type="url" path="mui/index/render" />
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">index_id</item>
+                    </item>
+                </item>
+            </argument>
+        </argument>
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+            </item>
+        </argument>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <bookmark name="bookmarks" />
+        <columnsControls name="columns_controls" />
+        <filters name="listing_filters">
+            <filterSelect name="index" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+                <settings>
+                    <options class="Monogo\TypesenseAnalytics\Model\Config\Source\IndexName"/>
+                    <caption translate="true">Select...</caption>
+                    <label translate="true">Index Name</label>
+                    <dataScope>index</dataScope>
+                    <imports>
+                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="templates" xsi:type="array">
+                        <item name="filters" xsi:type="array">
+                            <item name="select" xsi:type="array">
+                                <item name="component" xsi:type="string">Magento_Ui/js/form/element/ui-select</item>
+                                <item name="template" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </filters>
+        <paging name="listing_paging" />
+    </listingToolbar>
+    <columns name="typesense_analytics_columns">
+        <selectionsColumn name="ids">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="indexField" xsi:type="string">index_id</item>
+                </item>
+            </argument>
+        </selectionsColumn>
+
+        <column name="index" class="\Monogo\TypesenseAnalytics\Ui\Component\Listing\Columns\Column\Index">
+            <settings>
+                <dataType>select</dataType>
+                <sortable>false</sortable>
+                <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+                <label translate="true">Index Name</label>
+            </settings>
+        </column>
+        <column name="q">
+            <settings>
+                <filter>text</filter>
+                <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+                <label translate="true">Query</label>
+            </settings>
+        </column>
+        <column name="count">
+            <settings>
+                <bodyTmpl>ui/grid/cells/text</bodyTmpl>
+                <label translate="true">Count</label>
+                <sorting>desc</sorting>
+            </settings>
+        </column>
+    </columns>
+</listing>

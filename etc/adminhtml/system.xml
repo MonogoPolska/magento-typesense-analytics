@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="typesense" translate="label, comment" sortOrder="9000" class="typesense-tab">
+            <label>Typesense</label>
+        </tab>
+        <section id="typesense_analytics" sortOrder="1000" showInWebsite="1" showInStore="1" showInDefault="1"
+                 translate="label">
+            <label>Analytics</label>
+            <tab>typesense</tab>
+            <resource>Monogo_Typesense::config</resource>
+            <group id="settings" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                <label>Settings</label>
+                <field id="enabled" type="select" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1"
+                       translate="label">
+                    <label>Enabled</label>
+                    <comment>Enable Analytics</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                </field>
+                <field id="indexes" type="multiselect" sortOrder="20" showInWebsite="1" showInStore="1" showInDefault="1"
+                       translate="label">
+                    <label>Indexes </label>
+                    <comment>Select indexes to add analytics on</comment>
+                    <source_model>Monogo\TypesenseAnalytics\Model\Config\Source\RegisteredIndexers</source_model>
+                </field>
+                <field id="aggregation_suffix" type="text" sortOrder="30" showInWebsite="1" showInStore="1" showInDefault="1"
+                       translate="label">
+                    <label>Aggregation suffix </label>
+                    <comment>Aggregation Suffix for selected indexes</comment>
+                </field>
+                <field id="queries_limit" type="text" sortOrder="40" showInWebsite="1" showInStore="1"
+                       showInDefault="1" translate="label">
+                    <label>Queries limit</label>
+                    <comment>
+                        <![CDATA[
+                           How many unique queries should be indexed </br>
+                           Read more about
+                                <a href="https://typesense.org/docs/0.25.0/api/analytics-query-suggestions.html#create-an-analytics-rule" target="_blank">Create an analytics rule</a>.
+                        ]]>
+                    </comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -40,17 +40,6 @@
         <bookmark name="bookmarks" />
         <columnsControls name="columns_controls" />
         <filters name="listing_filters">
-            <filterSelect name="index" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
-                <settings>
-                    <options class="Monogo\TypesenseAnalytics\Model\Config\Source\IndexName"/>
-                    <caption translate="true">Select...</caption>
-                    <label translate="true">Index Name</label>
-                    <dataScope>index</dataScope>
-                    <imports>
-                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
-                    </imports>
-                </settings>
-            </filterSelect>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="templates" xsi:type="array">
@@ -63,6 +52,17 @@
                     </item>
                 </item>
             </argument>
+            <filterSelect name="index" provider="${ $.parentName }" component="Magento_Ui/js/form/element/ui-select" template="ui/grid/filters/elements/ui-select">
+                <settings>
+                    <options class="Monogo\TypesenseAnalytics\Model\Config\Source\IndexName"/>
+                    <caption translate="true">Select...</caption>
+                    <label translate="true">Index Name</label>
+                    <dataScope>index</dataScope>
+                    <imports>
+                        <link name="visible">componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
         </filters>
         <paging name="listing_paging" />
     </listingToolbar>

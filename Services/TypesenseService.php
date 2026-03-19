@@ -167,7 +167,7 @@ class TypesenseService
      * @return array|null
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function getAggregationCollections(int $storeId = null): ?array
+    public function getAggregationCollections(?int $storeId = null): ?array
     {
         $collection = [];
         $indexes = $this->configService->getSelectedIndexes($storeId);

@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Typesense\Client as TypeSenseClient;
 use Typesense\Collection;
 use Typesense\Exceptions\ConfigError;
+use Typesense\Exceptions\ObjectNotFound;
 use Typesense\Exceptions\TypesenseClientError;
 
 class TypesenseService
@@ -99,18 +100,21 @@ class TypesenseService
         $this->getIndex($analyticsIndex);
         $ruleName = $analyticsIndex . '_rule';
         $ruleConfiguration = [
+            'name' => $ruleName,
             'type' => 'popular_queries',
+            'collection' => $collectionName,
+            'event_type' => 'search',
             'params' => [
-                'source' => [
-                    'collections' => [$collectionName]
-                ],
-                'destination' => [
-                    'collection' => $analyticsIndex
-                ],
+                'destination_collection' => $analyticsIndex,
                 'limit' => $this->configService->getQueriesLimit(),
             ]
         ];
-        $this->client->getAnalytics()->rules()->upsert($ruleName, $ruleConfiguration);
+
+        try {
+            $this->client->getAnalytics()->rules()[$ruleName]->update($ruleConfiguration);
+        } catch (ObjectNotFound $e) {
+            $this->client->getAnalytics()->rules()->create($ruleConfiguration);
+        }
     }
 
     /**
@@ -120,17 +124,16 @@ class TypesenseService
     public function deleteAnalyticsRules(OutputInterface $output): void
     {
         try {
-            $rules = $this->client->getAnalytics()->rules()->retrieve();
-            if (!empty($rules) && is_array($rules) && isset($rules['rules']) && count($rules['rules'])) {
-                $output->writeln('Removing analytic rules');
-                foreach ($rules['rules'] as $rule) {
-                    if (isset($rule['name'])) {
-                        $ruleObject = $this->client->getAnalytics()->rules()->__get($rule['name']);
-                        if (isset($ruleObject)) {
-                            $ruleObject->delete();
-                            $output->writeln($rule['name']);
+            $response = $this->client->getAnalytics()->rules()->retrieve();
+            $rules = $response['rules'] ?? $response;
 
-                        }
+            if (!empty($rules) && is_array($rules)) {
+                $output->writeln('Removing analytic rules');
+                foreach ($rules as $rule) {
+                    $ruleName = $rule['name'] ?? null;
+                    if ($ruleName) {
+                        $this->client->getAnalytics()->rules()[$ruleName]->delete();
+                        $output->writeln($ruleName);
                     }
                 }
             }

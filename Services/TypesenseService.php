@@ -111,10 +111,11 @@ class TypesenseService
         ];
 
         try {
-            $this->client->getAnalytics()->rules()[$ruleName]->update($ruleConfiguration);
-        } catch (ObjectNotFound $e) {
-            $this->client->getAnalytics()->rules()->create($ruleConfiguration);
+            $this->client->getAnalytics()->rules()[$ruleName]->delete();
+        } catch (\Throwable $e) {
+            // Rule doesn't exist yet
         }
+        $this->client->getAnalytics()->rules()->create($ruleConfiguration);
     }
 
     /**

@@ -48,6 +48,6 @@ class HandleNewAlias implements ObserverInterface
         }
 
         $aggregationIndexName = $this->typesenseService->getAggregationIndexName($alias);
-        $this->typesenseService->setAnalyticsRule($aggregationIndexName, $collection);
+        $this->typesenseService->setAnalyticsRule($aggregationIndexName, $alias);
     }
 }

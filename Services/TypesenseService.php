@@ -89,33 +89,66 @@ class TypesenseService
     }
 
     /**
+     * Bind popular_queries rules to both the alias and the physical collection.
+     * Typesense matches analytics events by the collection name from the search
+     * request and does not resolve aliases, so both names must have a rule.
+     *
      * @param string $analyticsIndex
+     * @param string $alias
      * @param string $collectionName
      * @return void
      * @throws Exception
      * @throws TypesenseClientError
      */
-    public function setAnalyticsRule(string $analyticsIndex, string $collectionName): void
+    public function setAnalyticsRule(string $analyticsIndex, string $alias, string $collectionName): void
     {
         $this->getIndex($analyticsIndex);
-        $ruleName = $analyticsIndex . '_rule';
-        $ruleConfiguration = [
+
+        $this->deleteAnalyticsRule($analyticsIndex . '_rule');
+
+        $this->upsertAnalyticsRule($analyticsIndex . '_alias_rule', $alias, $analyticsIndex);
+
+        if ($collectionName !== '' && $collectionName !== $alias) {
+            $this->upsertAnalyticsRule($analyticsIndex . '_collection_rule', $collectionName, $analyticsIndex);
+        }
+    }
+
+    /**
+     * @param string $ruleName
+     * @param string $sourceCollection
+     * @param string $analyticsIndex
+     * @return void
+     * @throws Exception
+     * @throws TypesenseClientError
+     */
+    private function upsertAnalyticsRule(string $ruleName, string $sourceCollection, string $analyticsIndex): void
+    {
+        $this->deleteAnalyticsRule($ruleName);
+        $this->client->getAnalytics()->rules()->create([
             'name' => $ruleName,
             'type' => 'popular_queries',
-            'collection' => $collectionName,
+            'collection' => $sourceCollection,
             'event_type' => 'search',
+            'rule_tag' => $analyticsIndex,
             'params' => [
                 'destination_collection' => $analyticsIndex,
                 'limit' => $this->configService->getQueriesLimit(),
-            ]
-        ];
+                'capture_search_requests' => true,
+            ],
+        ]);
+    }
 
+    /**
+     * @param string $ruleName
+     * @return void
+     */
+    private function deleteAnalyticsRule(string $ruleName): void
+    {
         try {
             $this->client->getAnalytics()->rules()[$ruleName]->delete();
         } catch (\Throwable $e) {
             // Rule doesn't exist yet
         }
-        $this->client->getAnalytics()->rules()->create($ruleConfiguration);
     }
 
     /**

@@ -42,12 +42,12 @@ class HandleNewAlias implements ObserverInterface
 
         $selectedIndexers = $this->configService->getSelectedIndexes();
         $alias = $observer->getData('alias');
-        $collection = $observer->getData('collection');
+        $collection = (string)$observer->getData('collection');
         if (!in_array($alias, $selectedIndexers)) {
             return;
         }
 
         $aggregationIndexName = $this->typesenseService->getAggregationIndexName($alias);
-        $this->typesenseService->setAnalyticsRule($aggregationIndexName, $collection);
+        $this->typesenseService->setAnalyticsRule($aggregationIndexName, $alias, $collection);
     }
 }
